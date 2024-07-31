@@ -52,6 +52,7 @@ if __name__ == "__main__":
     # Now parse the arguments
     args = parser.parse_args()
 
+
     # Don't initialize for Inventory management subcommands
     # TODO: Remove when arg_init is refactored
     if args.command not in INVENTORY_VERBS:

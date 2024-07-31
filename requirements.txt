@@ -29,3 +29,5 @@ streamlit
 
 # Server mode
 flask
+pyngrok
+flask-cors

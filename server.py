@@ -9,8 +9,13 @@ from api.api import AssistantMessage, CompletionRequest, OpenAiApiGenerator
 from build.builder import BuilderArgs, TokenizerArgs
 from flask import Flask, jsonify, request, Response
 from generate import GeneratorArgs
+from pyngrok import ngrok
+from flask_cors import CORS
+
+
 
 app = Flask(__name__)
+CORS(app)
 # Messages and gen are kept global so they can be accessed by the flask app endpoints.
 messages: list = []
 gen: OpenAiApiGenerator = None
@@ -59,7 +64,12 @@ def chat_endpoint():
     # Add assistant response to chat history
     messages.append(AssistantMessage(content=response))
 
-    return jsonify({"response": response})
+    return jsonify({
+        "content": response,
+        "role": "assistant"
+        })
+
+    # return jsonify({"response": response})
 
 
 def initialize_generator(args) -> OpenAiApiGenerator:
@@ -81,6 +91,12 @@ def initialize_generator(args) -> OpenAiApiGenerator:
 
 
 def main(args):
+
+    # Start ngrok
+    url = ngrok.connect(5000)
+    print(f" * ngrok tunnel: {url}")
     global gen
     gen = initialize_generator(args)
-    app.run()
+    # Start Flask app
+    app.run(port=5000)
+
